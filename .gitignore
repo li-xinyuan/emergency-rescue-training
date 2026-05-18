@@ -3,3 +3,5 @@
 演示视频*.md
 完整对话记录.*
 assets/
+*.svg
+node_modules/

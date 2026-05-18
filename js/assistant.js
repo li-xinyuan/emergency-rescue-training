@@ -26,12 +26,12 @@ const Assistant = {
   },
 
   _getSvgPath(pose) {
-    return this._getSvgBase() + '安全小助手卡通形象生成 -' + pose + '.svg';
+    return this._getSvgBase() + '安全小助手卡通形象生成 -' + pose + '.png';
   },
 
   getHtml() {
     const base = this._getSvgBase();
-    const defaultSvg = base + '安全小助手卡通形象生成 -微笑.svg';
+    const defaultSvg = base + '安全小助手卡通形象生成 -微笑.png';
     return `
     <div class="assistant-float" id="assistantFloat">
       <div class="assistant-speech" id="assistantSpeech"></div>
