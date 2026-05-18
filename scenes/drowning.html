@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>溺水救援 - 紧急救援模拟训练营</title>
+  <link rel="stylesheet" href="../css/style.css?v=16">
+  <style>
+    .wave-layer{
+      position:absolute;left:0;right:0;bottom:0;height:60%;
+      background:repeating-linear-gradient(0deg,transparent,transparent 25px,rgba(255,255,255,.08) 25px,rgba(255,255,255,.08) 26px);
+      animation:waveMove 2s ease-in-out infinite;
+    }
+    @keyframes waveMove{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+    .floating-person{animation:bobFloat 1.5s ease-in-out infinite;display:inline-block}
+    @keyframes bobFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+    .splash{position:absolute;width:6px;height:6px;background:rgba(255,255,255,.7);border-radius:50%;animation:splashUp .8s ease-out infinite}
+    @keyframes splashUp{0%{transform:translateY(0)scale(1);opacity:.8}100%{transform:translateY(-40px)scale(0);opacity:0}}
+    .ripple{position:absolute;border:2px solid rgba(255,255,255,.3);border-radius:50%;animation:rippleOut 1.5s ease-out infinite}
+    @keyframes rippleOut{0%{width:10px;height:10px;opacity:.6}100%{width:100px;height:100px;opacity:0}}
+  </style>
+</head>
+<body>
+  <div class="scene-layout" id="sceneLayout">
+    <div class="scene-main">
+      <div class="scene-container" id="app">
+        <div id="cover">
+          <a href="../index.html" class="back-link">← 返回大厅</a>
+      <div class="scene-cover" style="background:linear-gradient(150deg,#64b5f6,#1976d2)">
+        <span class="cover-icon">🌊</span>
+        <h2>水上安全小卫士</h2>
+        <p class="cover-desc">有人在水中挣扎！你的第一反应可能想跳下去救人——但这是一个危险的冲动。学会正确的溺水救援方法，才能既救人又保护自己。</p>
+        <p class="cover-goal">🎯 学完你就能：判断溺水迹象 → 正确呼救和施救 → 使用"叫叫伸抛划"五步法</p>
+      </div>
+      <button class="btn btn-primary btn-center" onclick="window._startGame()">开始闯关！</button>
+    </div>
+    <div id="game" class="hidden">
+      <div class="progress-bar" id="progress"></div>
+      <div class="level-area active" id="levelContent"></div>
+      <button class="btn btn-primary btn-center" id="nextBtn" onclick="window._nextLevel()" style="visibility:hidden">继续下一关 →</button>
+    </div>
+    <div id="result" class="hidden"></div>
+  </div>
+
+  <script src="../js/scenarios.js?v=15"></script>
+  <script src="../js/engine.js?v=15"></script>
+  <script src="../js/ai-helper.js?v=15"></script>
+  <script src="../js/app.js?v=15"></script>
+  <script src="../js/assistant.js?v=15"></script>
+  <script src="../js/scene-runner.js?v=15"></script>
+  <script>
+    initScene('drowning', function(sceneId, levelIndex) {
+      return `
+        <div class="wave-layer"></div>
+        <div class="ripple" style="top:40%;left:30%"></div>
+        <div class="ripple" style="top:45%;left:35%;animation-delay:.5s"></div>
+        <div class="splash" style="top:42%;left:33%"></div>
+        <div class="splash" style="top:44%;left:36%;animation-delay:.3s"></div>
+        <div class="splash" style="top:40%;left:30%;animation-delay:.6s"></div>`;
+    });
+  </script>
+    </div>
+  </div>
+</body>
+</html>

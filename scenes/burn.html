@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>烫伤处理 - 紧急救援模拟训练营</title>
+  <link rel="stylesheet" href="../css/style.css?v=16">
+  <style>
+    .steam-particle{
+      position:absolute;bottom:60px;width:8px;background:rgba(255,255,255,.5);border-radius:4px;
+      animation:steamUp 2s ease-out infinite;
+    }
+    @keyframes steamUp{0%{transform:translateY(0)scaleY(1);opacity:.7}100%{transform:translateY(-100px)scaleY(4);opacity:0}}
+    .heat-wave{
+      position:absolute;border-radius:50%;
+      background:radial-gradient(circle,rgba(255,100,0,.3),transparent);
+      animation:heatPulse 1s ease-in-out infinite alternate;
+    }
+    @keyframes heatPulse{0%{transform:scale(1);opacity:.3}100%{transform:scale(1.3);opacity:.6}}
+    .droplet{
+      position:absolute;width:6px;height:10px;background:rgba(100,180,255,.7);
+      border-radius:50% 50% 50% 50%/30% 30% 70% 70%;animation:dropFall 1s ease-in infinite;
+    }
+    @keyframes dropFall{0%{transform:translateY(-30px);opacity:0}50%{opacity:1}100%{transform:translateY(60px);opacity:0}}
+  </style>
+</head>
+<body>
+  <div class="scene-layout" id="sceneLayout">
+    <div class="scene-main">
+      <div class="scene-container" id="app">
+        <div id="cover">
+          <a href="../index.html" class="back-link">← 返回大厅</a>
+      <div class="scene-cover" style="background:linear-gradient(150deg,#ffb74d,#e76f51)">
+        <span class="cover-icon">🧯</span>
+        <h2>烧烫伤急救大作战</h2>
+        <p class="cover-desc">滚烫的热水泼到手臂上，皮肤火烧火燎地疼！你可能会想到抹酱油、涂牙膏…但这些偏方都是错的！学会正确的烫伤急救五步法。</p>
+        <p class="cover-goal">🎯 学完你就能：识别烫伤程度 → 正确执行"冲脱泡盖送" → 避开常见急救误区</p>
+      </div>
+      <button class="btn btn-primary btn-center" onclick="window._startGame()">开始闯关！</button>
+    </div>
+    <div id="game" class="hidden">
+      <div class="progress-bar" id="progress"></div>
+      <div class="level-area active" id="levelContent"></div>
+      <button class="btn btn-primary btn-center" id="nextBtn" onclick="window._nextLevel()" style="visibility:hidden">继续下一关 →</button>
+    </div>
+    <div id="result" class="hidden"></div>
+  </div>
+
+  <script src="../js/scenarios.js?v=15"></script>
+  <script src="../js/engine.js?v=15"></script>
+  <script src="../js/ai-helper.js?v=15"></script>
+  <script src="../js/app.js?v=15"></script>
+  <script src="../js/assistant.js?v=15"></script>
+  <script src="../js/scene-runner.js?v=15"></script>
+  <script>
+    initScene('burn', function(sceneId, levelIndex) {
+      let html = '<div class="heat-wave" style="top:30%;left:40%;width:80px;height:80px"></div>';
+      if (levelIndex === 0 || levelIndex === 1) {
+        for (let i = 0; i < 6; i++) {
+          html += `<div class="steam-particle" style="left:${35+i*6}%;animation-delay:${i*0.3}s;height:${20+i*5}px"></div>`;
+        }
+      } else {
+        for (let i = 0; i < 8; i++) {
+          html += `<div class="droplet" style="left:${25+i*8}%;animation-delay:${i*0.2}s"></div>`;
+        }
+      }
+      return html;
+    });
+  </script>
+    </div>
+  </div>
+</body>
+</html>

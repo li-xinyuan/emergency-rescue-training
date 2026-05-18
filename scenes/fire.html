@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>火灾逃生 - 紧急救援模拟训练营</title>
+  <link rel="stylesheet" href="../css/style.css?v=16">
+  <style>
+    .fire-bg { position: relative; overflow: hidden; }
+    .flame {
+      position: absolute; bottom: 0; border-radius: 50% 50% 20% 20%;
+      animation: flameFlicker 0.4s ease-in-out infinite alternate;
+    }
+    .flame-1 { left:25%;width:60px;height:90px;background:radial-gradient(ellipse at center,#ffeb3b,#ff6b35 40%,#d32f2f 70%,transparent); }
+    .flame-2 { left:40%;width:40px;height:70px;background:radial-gradient(ellipse at center,#fff,#ff9800 30%,#ff6b35 60%,transparent);animation-delay:.1s }
+    .flame-3 { left:55%;width:50px;height:85px;background:radial-gradient(ellipse at center,#ffeb3b,#ff4500 50%,transparent);animation-delay:.2s }
+    .flame-4 { left:65%;width:35px;height:60px;background:radial-gradient(ellipse at center,#ff9800,#d32f2f 50%,transparent);animation-delay:.15s }
+    .flame-5 { left:35%;width:30px;height:55px;background:radial-gradient(ellipse at center,#ffeb3b,#ff4500 60%,transparent);animation-delay:.25s }
+    @keyframes flameFlicker {
+      0%{transform:scaleY(1)scaleX(1)translateY(0);opacity:.9}
+      50%{transform:scaleY(1.15)scaleX(.85)translateY(-5px);opacity:1}
+      100%{transform:scaleY(.95)scaleX(1.1)translateY(0);opacity:.85}
+    }
+    .smoke-particle {
+      position:absolute;bottom:80px;background:rgba(120,120,120,.4);border-radius:50%;
+      animation:smokeRise 3s ease-out infinite;
+    }
+    .smoke-1{left:30%;width:20px;height:20px}.smoke-2{left:45%;width:25px;height:25px;animation-delay:.8s}
+    .smoke-3{left:55%;width:18px;height:18px;animation-delay:1.6s}.smoke-4{left:40%;width:22px;height:22px;animation-delay:2.2s}
+    @keyframes smokeRise {
+      0%{transform:translateY(0)scale(1);opacity:.5}
+      100%{transform:translateY(-120px)scale(3);opacity:0}
+    }
+    .fog-layer{
+      position:absolute;top:0;left:0;right:0;height:50%;
+      background:linear-gradient(180deg,rgba(100,100,100,.7),rgba(100,100,100,.1));
+      animation:fogPulse 2s ease-in-out infinite;
+    }
+    @keyframes fogPulse{0%,100%{opacity:.6}50%{opacity:.85}}
+    @keyframes alertGlow{0%{box-shadow:0 0 10px rgba(255,0,0,.3)}100%{box-shadow:0 0 40px rgba(255,0,0,.8)}}
+  </style>
+</head>
+<body>
+  <div class="scene-layout" id="sceneLayout">
+    <div class="scene-main">
+      <div class="scene-container" id="app">
+        <div id="cover">
+          <a href="../index.html" class="back-link">← 返回大厅</a>
+      <div class="scene-cover" style="background:linear-gradient(150deg,#f4a261,#e76f51)">
+        <span class="cover-icon">🔥</span>
+        <h2>火场大逃生</h2>
+        <p class="cover-desc">嘿，小伙伴！厨房突然窜出火苗，楼道里浓烟滚滚…别怕！在这里你会化身小小消防员，学会火场中最关键的保命技能。</p>
+        <p class="cover-goal">🎯 学完你就能：判断火灾类型 → 选择正确灭火方式 → 规划安全逃生路线</p>
+      </div>
+      <button class="btn btn-primary btn-center" onclick="window._startGame()">开始闯关！</button>
+    </div>
+    <div id="game" class="hidden">
+      <div class="progress-bar" id="progress"></div>
+      <div class="level-area active" id="levelContent"></div>
+      <button class="btn btn-primary btn-center" id="nextBtn" onclick="window._nextLevel()" style="visibility:hidden">继续下一关 →</button>
+    </div>
+    <div id="result" class="hidden"></div>
+  </div>
+
+  <script src="../js/scenarios.js?v=15"></script>
+  <script src="../js/engine.js?v=15"></script>
+  <script src="../js/ai-helper.js?v=15"></script>
+  <script src="../js/app.js?v=15"></script>
+  <script src="../js/assistant.js?v=15"></script>
+  <script src="../js/scene-runner.js?v=15"></script>
+  <script>
+    initScene('fire', function(sceneId, levelIndex) {
+      if (levelIndex === 0) {
+        return `
+          <div class="flame flame-1"></div><div class="flame flame-2"></div>
+          <div class="flame flame-3"></div><div class="flame flame-4"></div><div class="flame flame-5"></div>
+          <div class="smoke-particle smoke-1"></div><div class="smoke-particle smoke-2"></div>
+          <div class="smoke-particle smoke-3"></div><div class="smoke-particle smoke-4"></div>`;
+      } else if (levelIndex === 1) {
+        return '<div class="fog-layer"></div>';
+      } else if (levelIndex === 4) {
+        return '<div style="position:absolute;bottom:0;left:20%;right:20%;height:30%;background:linear-gradient(0deg,rgba(80,80,80,.7),transparent);animation:fogPulse 1.5s ease-in-out infinite"></div><div class="fog-layer" style="height:30%"></div>';
+      } else {
+        return '<div style="position:absolute;inset:0;animation:alertGlow .8s ease-in-out infinite alternate"></div>';
+      }
+    });
+  </script>
+    </div>
+  </div>
+</body>
+</html>

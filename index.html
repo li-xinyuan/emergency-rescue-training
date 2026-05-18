@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>紧急救援模拟训练营</title>
+  <link rel="stylesheet" href="css/style.css?v=19">
+</head>
+<body>
+  <div class="name-modal-overlay" id="confirmModal" style="display:none">
+    <div class="name-modal-card">
+      <div class="modal-assistant">
+        <div class="modal-assistant-speech" id="confirmMsg">确定要这样做吗？</div>
+        <div class="assistant-body">
+          <img class="assistant-img" src="安全小助手卡通形象生成 -摇头.svg" alt="安全小助手" style="width:100px;height:100px;">
+        </div>
+        <div class="assistant-name">安全小助手</div>
+      </div>
+      <div class="name-modal-row">
+        <button class="btn btn-secondary" id="confirmCancelBtn">再想想</button>
+        <button class="btn btn-primary" id="confirmOkBtn">确定重来</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="name-modal-overlay" id="nameModal">
+    <div class="name-modal-card">
+      <div class="modal-assistant">
+        <div class="modal-assistant-speech">你好！我是安全小助手，你叫什么名字呀？</div>
+        <div class="assistant-body">
+        <img class="assistant-img" src="安全小助手卡通形象生成 -微笑.svg" alt="安全小助手" style="width:100px;height:100px;">
+        </div>
+        <div class="assistant-name">安全小助手</div>
+      </div>
+      <div class="name-modal-row">
+        <input type="text" id="nameInput" placeholder="你的名字" maxlength="10" autocomplete="off">
+        <button class="btn btn-primary" id="nameConfirmBtn">开始闯关</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="home-container">
+    <header class="home-header">
+      <div class="header-stars">
+        <span>✦</span><span>✧</span><span>✦</span><span>✧</span><span>✦</span>
+      </div>
+      <h1>🚨 紧急救援模拟训练营</h1>
+      <p class="subtitle">学会自救互救，关键时刻不慌张</p>
+    </header>
+
+    <div class="progress-summary" id="progressSummary">
+      <span class="progress-text">🎮 已通关 <strong id="completedCount">0</strong>/4</span>
+      <span class="progress-stars" id="totalStars"></span>
+    </div>
+
+    <div class="scene-grid" id="sceneGrid">
+      <!-- JS动态渲染 -->
+    </div>
+
+    <div class="coming-soon">🎉 全部场景已解锁！快来挑战吧～</div>
+  </div>
+
+  <script src="js/scenarios.js?v=19"></script>
+  <script src="js/assistant.js?v=19"></script>
+  <script src="js/app.js?v=19"></script>
+</body>
+</html>
