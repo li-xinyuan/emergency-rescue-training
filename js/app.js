@@ -136,52 +136,50 @@ function updateProgressSummary() {
   const summaryEl = document.getElementById('progressSummary');
   if (!summaryEl) return;
 
-  if (count > 0) {
-    summaryEl.style.display = 'flex';
-    if (countEl) countEl.textContent = count;
-    if (starsEl) starsEl.textContent = '⭐'.repeat(count) + '☆'.repeat(total - count);
+  summaryEl.style.display = 'flex';
+  if (countEl) countEl.textContent = count;
+  if (starsEl) starsEl.textContent = '⭐'.repeat(count) + '☆'.repeat(total - count);
 
-    // 证书按钮：始终显示，全部通关前灰色不可点
-    let certBtn = document.getElementById('certBtn');
-    if (!certBtn) {
-      certBtn = document.createElement('button');
-      certBtn.id = 'certBtn';
-      certBtn.className = 'cert-btn';
-      certBtn.innerHTML = '🎓 下载我的证书';
-      certBtn.onclick = function() {
-        const saved = getProgress();
-        const done = sceneList.filter(s => saved[s.id] && saved[s.id].completed).length;
-        if (done === sceneList.length) generateCertificate();
-      };
-      summaryEl.appendChild(certBtn);
-    }
-    if (count === total) {
-      certBtn.classList.remove('disabled');
-      certBtn.title = '';
-    } else {
-      certBtn.classList.add('disabled');
-      certBtn.title = '完成全部' + total + '个场景即可下载证书';
-    }
+  // 证书按钮：始终显示，全部通关前灰色不可点
+  let certBtn = document.getElementById('certBtn');
+  if (!certBtn) {
+    certBtn = document.createElement('button');
+    certBtn.id = 'certBtn';
+    certBtn.className = 'cert-btn';
+    certBtn.innerHTML = '🎓 下载我的证书';
+    certBtn.onclick = function() {
+      const saved = getProgress();
+      const done = sceneList.filter(s => saved[s.id] && saved[s.id].completed).length;
+      if (done === sceneList.length) generateCertificate();
+    };
+    summaryEl.appendChild(certBtn);
+  }
+  if (count === total) {
+    certBtn.classList.remove('disabled');
+    certBtn.title = '';
+  } else {
+    certBtn.classList.add('disabled');
+    certBtn.title = '完成全部' + total + '个场景即可下载证书';
+  }
 
-    // 重置按钮
-    let resetBtn = document.getElementById('resetBtn');
-    if (!resetBtn) {
-      resetBtn = document.createElement('button');
-      resetBtn.id = 'resetBtn';
-      resetBtn.className = 'reset-btn';
-      resetBtn.innerHTML = '🔄 重新开始';
-      resetBtn.title = '清除所有进度和名字，回到初始状态';
-      resetBtn.onclick = function() {
-        showConfirm('确定要全部重来吗？这会清除所有通关进度和你的名字，就像第一次打开一样。', function() {
-          localStorage.removeItem('emergency_rescue_progress');
-          localStorage.removeItem('emergency_rescue_name');
-          localStorage.removeItem('emergency_rescue_startTime');
-          localStorage.removeItem('assistant_position');
-          location.reload();
-        });
-      };
-      summaryEl.appendChild(resetBtn);
-    }
+  // 重置按钮：始终显示
+  let resetBtn = document.getElementById('resetBtn');
+  if (!resetBtn) {
+    resetBtn = document.createElement('button');
+    resetBtn.id = 'resetBtn';
+    resetBtn.className = 'reset-btn';
+    resetBtn.innerHTML = '🔄 重新开始';
+    resetBtn.title = '清除所有进度和名字，回到初始状态';
+    resetBtn.onclick = function() {
+      showConfirm('确定要全部重来吗？这会清除所有通关进度和你的名字，就像第一次打开一样。', function() {
+        localStorage.removeItem('emergency_rescue_progress');
+        localStorage.removeItem('emergency_rescue_name');
+        localStorage.removeItem('emergency_rescue_startTime');
+        localStorage.removeItem('assistant_position');
+        location.reload();
+      });
+    };
+    summaryEl.appendChild(resetBtn);
   }
 }
 
