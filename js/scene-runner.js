@@ -242,6 +242,7 @@ function initScene(sceneId, customRenderAnimations) {
         item.classList.add('sorted');
         item.querySelector('.sort-num').textContent = (i + 1);
       });
+      document.getElementById('sortConfirmBtn').disabled = true;
     } else {
       const correctOrder = level.sortItems.map(s => s.id);
       items.forEach((item, i) => {
