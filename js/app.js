@@ -181,6 +181,87 @@ function updateProgressSummary() {
     };
     summaryEl.appendChild(resetBtn);
   }
+
+  // 知识回顾按钮：已通关至少1个场景后显示
+  let handbookBtn = document.getElementById('handbookBtn');
+  if (!handbookBtn && count > 0) {
+    handbookBtn = document.createElement('button');
+    handbookBtn.id = 'handbookBtn';
+    handbookBtn.className = 'handbook-btn';
+    handbookBtn.innerHTML = '📖 我的安全手册';
+    handbookBtn.title = '复习已学过的安全知识';
+    handbookBtn.onclick = function() { showHandbook(); };
+    summaryEl.appendChild(handbookBtn);
+  }
+}
+
+// ===== 知识回顾（我的安全手册）=====
+
+function showHandbook() {
+  const saved = getProgress();
+  const completed = sceneList.filter(s => saved[s.id] && saved[s.id].completed);
+
+  let cardsHTML;
+  if (completed.length === 0) {
+    cardsHTML = '<div style="text-align:center;padding:40px;color:var(--text-lighter)">还没有通关的场景，先去训练吧！💪</div>';
+  } else {
+    cardsHTML = completed.map(s => {
+      const data = scenarioData[s.id];
+      return `
+        <div class="handbook-card handbook-${s.id}">
+          <div class="handbook-card-header">
+            <span class="handbook-icon">${data.icon}</span>
+            <div>
+              <h4>${data.name}</h4>
+              <span class="handbook-badge">${data.badge.icon} ${data.badge.name}</span>
+            </div>
+          </div>
+          <div class="handbook-summary">
+            ${data.summary.map(item => `<div class="handbook-item">${item}</div>`).join('')}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  let modal = document.getElementById('handbookModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'handbookModal';
+    modal.className = 'name-modal-overlay';
+    document.body.appendChild(modal);
+  }
+  modal.innerHTML = `
+    <div class="handbook-modal-card">
+      <div class="handbook-modal-header">
+        <h3>📖 我的安全手册</h3>
+        <button class="handbook-close" id="handbookCloseBtn">✕</button>
+      </div>
+      <p class="handbook-tip">随时翻阅学过的安全知识，关键时刻能救命！</p>
+      <div class="handbook-content">${cardsHTML}</div>
+    </div>
+  `;
+  modal.style.display = 'flex';
+
+  function closeHandbook() { modal.style.display = 'none'; }
+  document.getElementById('handbookCloseBtn').onclick = closeHandbook;
+  modal.onclick = function(e) { if (e.target === modal) closeHandbook(); };
+}
+
+// ===== 音效开关 =====
+
+function createSoundToggle() {
+  if (document.getElementById('soundToggle')) return;
+  const btn = document.createElement('button');
+  btn.id = 'soundToggle';
+  btn.className = 'sound-toggle';
+  btn.title = '点击开关音效';
+  btn.innerHTML = Sound.enabled ? '🔊' : '🔇';
+  btn.onclick = function() {
+    const on = Sound.toggle();
+    btn.innerHTML = on ? '🔊' : '🔇';
+  };
+  document.body.appendChild(btn);
 }
 
 // ===== 证书生成 =====
@@ -374,6 +455,7 @@ function showConfirm(message, onConfirm) {
 document.addEventListener('DOMContentLoaded', () => {
   // 先初始化浮动小助手（保证 DOM 就位）
   Assistant.init(document.body);
+  createSoundToggle();
 
   renderSceneCards();
   initNameModal();

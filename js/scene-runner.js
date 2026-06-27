@@ -9,6 +9,7 @@ function initScene(sceneId, customRenderAnimations) {
   const renderAnimations = customRenderAnimations || function() { return ''; };
 
   function startGame() {
+    Sound._getCtx(); // 用户点击后激活音频上下文
     document.getElementById('cover').classList.add('hidden');
     document.getElementById('game').classList.remove('hidden');
     document.getElementById('result').classList.add('hidden');
@@ -74,6 +75,7 @@ function initScene(sceneId, customRenderAnimations) {
       ${isConsequence ? '<div style="text-align:center;margin:8px 0;color:#f43f5e;font-weight:600;font-size:14px">⚠️ 这是一次错误的决策引发的后果！</div>' : ''}
       <div class="level-question">${level.question}</div>
       ${bodyHTML}
+      <div class="feedback-card" id="feedbackCard"></div>
     `;
 
     if (!isSort) {
@@ -253,15 +255,63 @@ function initScene(sceneId, customRenderAnimations) {
     }
 
     if (result.correct) {
-      Assistant.cheer(result.feedback);
+      showFeedback(true, result.feedback);
       if (engine.isComplete()) {
         document.getElementById('nextBtn').textContent = '查看结果 🏆';
       }
       document.getElementById('nextBtn').style.visibility = 'visible';
     } else {
-      Assistant.encourage(result.feedback);
+      showFeedback(false, result.feedback);
     }
   };
+
+  // 显示反馈卡片 + 触发音效 + 助手配合
+  function showFeedback(correct, feedback) {
+    if (correct) {
+      Sound.correct();
+    } else {
+      Sound.wrong();
+    }
+
+    const card = document.getElementById('feedbackCard');
+    if (card) {
+      card.className = 'feedback-card ' + (correct ? 'feedback-correct' : 'feedback-wrong');
+      card.innerHTML =
+        '<div class="feedback-header">' +
+          '<span class="feedback-emoji">' + (correct ? '✅' : '⚠️') + '</span>' +
+          '<span class="feedback-status">' + (correct ? '答对了！' : '再想一想') + '</span>' +
+        '</div>' +
+        '<div class="feedback-text">' + feedback + '</div>';
+      card.classList.add('show');
+      setTimeout(function() {
+        // 答对时优先让"继续"按钮进入视野；答错时滚动到反馈卡片
+        var target = correct ? document.getElementById('nextBtn') : card;
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 100);
+    }
+
+    // 助手配合：表情 + 短语音（详细反馈展示在卡片中）
+    if (correct) {
+      Assistant.cheer('答对啦！太棒了～');
+    } else {
+      Assistant.encourage('别灰心，看看下面的提示吧～');
+    }
+  }
+
+  // 错误后果可视化：场景图闪红 + 危险标记抖动
+  function triggerDangerAnimation() {
+    const illustration = document.querySelector('.scene-illustration');
+    if (!illustration) return;
+    const warn = document.createElement('div');
+    warn.className = 'danger-overlay';
+    warn.innerHTML = '<span class="danger-burst">💥</span>';
+    illustration.appendChild(warn);
+    illustration.classList.add('scene-danger-shake');
+    setTimeout(function() {
+      if (warn.parentNode) warn.remove();
+      illustration.classList.remove('scene-danger-shake');
+    }, 1500);
+  }
 
   function selectOption(index) {
     const level = engine.getCurrentLevel();
@@ -272,7 +322,8 @@ function initScene(sceneId, customRenderAnimations) {
     if (result.consequenceTriggered) {
       buttons.forEach(b => { b.style.pointerEvents = 'none'; b.style.opacity = '0.5'; });
       buttons[index].classList.add('wrong');
-      Assistant.encourage(result.feedback);
+      triggerDangerAnimation();
+      showFeedback(false, result.feedback);
       setTimeout(() => {
         renderLevel();
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -285,7 +336,7 @@ function initScene(sceneId, customRenderAnimations) {
         b.style.pointerEvents = 'none';
         if (i === level.correctIndex) b.classList.add('selected');
       });
-      Assistant.cheer(result.feedback);
+      showFeedback(true, result.feedback);
       if (engine.isComplete()) {
         document.getElementById('nextBtn').textContent = '查看结果 🏆';
       }
@@ -293,7 +344,8 @@ function initScene(sceneId, customRenderAnimations) {
     } else {
       buttons[index].style.pointerEvents = 'none';
       buttons[index].classList.add('wrong');
-      Assistant.encourage(result.feedback);
+      triggerDangerAnimation();
+      showFeedback(false, result.feedback);
     }
   }
 
@@ -389,13 +441,14 @@ function initScene(sceneId, customRenderAnimations) {
             `;
           }).join('')}
         </div>
-        <div style="margin-top:20px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <div class="result-actions">
           <button class="btn btn-primary" onclick="window._startGame()">🔄 再练一次</button>
           <a href="../index.html" class="btn btn-secondary">🏠 返回大厅</a>
         </div>
       </div>
     `;
 
+    Sound.complete();
     Assistant.say(cheerMsg, 'happy');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
